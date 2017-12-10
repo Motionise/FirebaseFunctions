@@ -49,11 +49,10 @@ exports.firstDataTrigger = functions.database.ref('/sensor/{uid}/{finger}/{numbe
             kalman = data.val().kalman;
         })
     }
-    console.log(uid+" "+x+" "+y+" "+z+" "+kalman+"  센서값들");
 
     admin.database().ref('/sensor/'+uid+'/'+finger+'/'+number+'/'+sensorName).once('value', function(data){
         console.log(data.val());
-        if(sensorName == "flex"){
+        if(sensorName == "flex" && x != undefined){
             data.forEach(function(snapshot){
                 sum_x+=snapshot.val().x;
                 count++;
@@ -62,12 +61,12 @@ exports.firstDataTrigger = functions.database.ref('/sensor/{uid}/{finger}/{numbe
             console.log(avr_x+"    test1");
             var payload = {
                 x:avr_x,
-                y:avr_y,
-                z:avr_z,
-                kalman:avr_kalman
+                y:null,
+                z:null,
+                kalman:null
             }
             return pushData(payload);
-        }else {
+        }else if(sensorName != "flex" && x != undefined){
             data.forEach(function(snapshot){
                 sum_x+=snapshot.val().x;
                 sum_y+=snapshot.val().y;
